@@ -17,7 +17,8 @@ fieldnames = ['time', 'roll', 'pitch', 'yaw',
               'mag_x', 'mag_y', 'mag_z',
               'quat', 'head',
               'depth',
-              'distance', 'switch', 'duty']
+              'distance', 'switch', 
+              'duty', 'angle']
 
 datetime_format = '%Y%m%d_%H%M%S'
 
@@ -65,10 +66,11 @@ def my_handler(channel, data):
                      'mag_z':msg.mag_z,
                      'quat':msg.quat,
                      'head':msg.head,
-                     'depth':'depth',
+                     'depth':0,
                      'distance':inches,
                      'switch':switch,
-                     'duty':duty
+                     'duty':duty,
+                     'angle':angle
     })
     #print("wrote")
 

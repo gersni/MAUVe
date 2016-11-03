@@ -22,6 +22,9 @@ class Servo:
 
   def angle_to_duty(self, angle):
     return -1.5 +(3.0/270)*(angle+135)
+    
+  def duty_to_angle(self, angle):
+    return -135 +(270/3)*(angle+1.5)
 
   def set_angle(self, angle):
     rcpy.set_state(rcpy.RUNNING)
@@ -81,6 +84,7 @@ class Servo:
         
         msg = servolcm()
         msg.duty = self.duty
+        msg.angle = duty_to_angle(self.duty)
         msg.timestamp = datetime.strftime(datetime.now(),datetime_format)
 
         self.lc.publish("servo_data", msg.encode())

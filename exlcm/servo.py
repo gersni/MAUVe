@@ -10,14 +10,15 @@ except ImportError:
 import struct
 
 class servo(object):
-    __slots__ = ["duty", "timestamp"]
+    __slots__ = ["duty", "angle", "timestamp"]
 
-    __typenames__ = ["double", "string"]
+    __typenames__ = ["double", "double", "string"]
 
-    __dimensions__ = [None, None]
+    __dimensions__ = [None, None, None]
 
     def __init__(self):
         self.duty = 0.0
+        self.angle = 0.0
         self.timestamp = ""
 
     def encode(self):
@@ -27,7 +28,7 @@ class servo(object):
         return buf.getvalue()
 
     def _encode_one(self, buf):
-        buf.write(struct.pack(">d", self.duty))
+        buf.write(struct.pack(">dd", self.duty, self.angle))
         __timestamp_encoded = self.timestamp.encode('utf-8')
         buf.write(struct.pack('>I', len(__timestamp_encoded)+1))
         buf.write(__timestamp_encoded)
@@ -45,7 +46,7 @@ class servo(object):
 
     def _decode_one(buf):
         self = servo()
-        self.duty = struct.unpack(">d", buf.read(8))[0]
+        self.duty, self.angle = struct.unpack(">dd", buf.read(16))
         __timestamp_len = struct.unpack('>I', buf.read(4))[0]
         self.timestamp = buf.read(__timestamp_len)[:-1].decode('utf-8', 'replace')
         return self
@@ -54,7 +55,7 @@ class servo(object):
     _hash = None
     def _get_hash_recursive(parents):
         if servo in parents: return 0
-        tmphash = (0xb646142d8b9895c3) & 0xffffffffffffffff
+        tmphash = (0x605836262f947b5e) & 0xffffffffffffffff
         tmphash  = (((tmphash<<1)&0xffffffffffffffff) + (tmphash>>63)) & 0xffffffffffffffff
         return tmphash
     _get_hash_recursive = staticmethod(_get_hash_recursive)

@@ -3,5 +3,6 @@ package exlcm;
 struct servo
 {
     double duty;
+    double angle;
     string timestamp;
 }

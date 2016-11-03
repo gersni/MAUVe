@@ -77,7 +77,16 @@ class Stepper2:
       # check switch
       if self.switch.is_changed_state():
         print("switch changed")
-        self.inches = 0
+        
+        #self.inches = 0
+        
+        msg = battery()
+        msg.inches = self.inches
+        msg.switch = self.switch.state
+        msg.timestamp = datetime.strftime(datetime.now(),datetime_format)
+
+        self.lc.publish("battery_data", msg.encode())
+        
         break
 
       GPIO.output(pin_step, GPIO.LOW)
