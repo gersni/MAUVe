@@ -8,6 +8,7 @@ import os
 import lcm
 from exlcm import imu
 from exlcm import battery
+from exlcm import servo
 
 # set constants and variables
 fieldnames = ['time', 'roll', 'pitch', 'yaw',
@@ -16,7 +17,7 @@ fieldnames = ['time', 'roll', 'pitch', 'yaw',
               'mag_x', 'mag_y', 'mag_z',
               'quat', 'head',
               'depth',
-              'distance', 'switch']
+              'distance', 'switch', 'duty']
 
 datetime_format = '%Y%m%d_%H%M%S'
 
@@ -39,6 +40,7 @@ else:
 def my_handler(channel, data):
   global inches
   global switch
+  global duty
 
   #print("Received message on channel \"%s\"" % channel)
 

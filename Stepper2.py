@@ -88,8 +88,6 @@ class Stepper2:
 
       if (time.time() - self.start >= 0.1): # 10 Hz
         msg = battery()
-        print(self.inches)
-        print(self.switch.state)
         msg.inches = self.inches
         msg.switch = self.switch.state
         msg.timestamp = datetime.strftime(datetime.now(),datetime_format)
