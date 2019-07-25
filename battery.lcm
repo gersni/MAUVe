@@ -1,0 +1,8 @@
+package exlcm;
+
+struct battery
+{
+    int32_t switch;
+    double inches;
+    string timestamp;
+}

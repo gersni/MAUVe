@@ -12,19 +12,22 @@ class Servo:
     self.duty = duty
     self.period = period
 
-  def angle_to_duty(angle):
-    return -1.5 +(3.0/270)(angle+135)
+  def angle_to_duty(self, angle):
+    return -1.5 +(3.0/270)*(angle+135)
 
-  def set_angle(angle):
+  def set_angle(self, angle):
+    srvo = servo.Servo(self.channel)
     rcpy.set_state(rcpy.RUNNING)
 
-    duty = angle_to_duty(angle)
+    duty = self.angle_to_duty(angle)
+    print(duty)
     srvo.set(duty)
 
     servo.enable()
     servo.disable()
 
-  def sweep(angle):
+  def sweep(self, angle):
+    self.srvo = servo.Servo(channel)
     duty = angle_to_duty(angle)
 
     rcpy.set_state(rcpy.RUNNING)
