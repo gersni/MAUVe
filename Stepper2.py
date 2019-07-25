@@ -37,9 +37,9 @@ class Stepper2:
     self.switch = Switch()
 
     self.start = time.time()
-    self.imu = mpu9250.IMU(enable_dmp=True,
-                           dmp_sample_rate=200,
-                           enable_magnetometer=True)
+    #self.imu = mpu9250.IMU(enable_dmp=True,
+    #                       dmp_sample_rate=200,
+    #                       enable_magnetometer=True)
 
     # init csv
     if not os.path.exists("log.csv"):
@@ -76,7 +76,10 @@ class Stepper2:
     self.start = time.time()
     while True:
       # check switch
-
+      if self.switch.is_changed_state():
+        print("switch changed")
+        self.inches = 0
+        break
 
       GPIO.output(pin_step, GPIO.LOW)
       time.sleep(sleep_time)
@@ -88,11 +91,8 @@ class Stepper2:
         #msg = battery()
         #msg.inches = self.inches
         #msg.switch = self.switch
-        '''if self.switch.is_changed_state():
-          print("switch changed")
-          self.inches = 0
-          break
-        '''
+        
+        
         self.start = time.time()
 
 

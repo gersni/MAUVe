@@ -17,10 +17,13 @@ class Switch:
     self.update_state(self.get_state())
 
   def get_state(self):
-    out = subprocess.Popen(["cat", "/sys/class/gpio/gpio97/value"],stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    stdout,stderr = out.communicate()
+    #out = subprocess.Popen(["cat", "/sys/class/gpio/gpio97/value"],stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    #stdout,stderr = out.communicate()
 
-    value = int(stdout)
+    #value = int(stdout)
+    f = open("/sys/class/gpio/gpio97/value", "r")
+
+    value = int(f.read())
 
     return value
 
