@@ -7,6 +7,7 @@ import os
 
 import lcm
 from exlcm import imu
+from exlcm import battery
 
 # set constants and variables
 fieldnames = ['time', 'roll', 'pitch', 'yaw',
@@ -21,6 +22,7 @@ datetime_format = '%Y%m%d_%H%M%S'
 
 inches = 0
 switch = 0
+duty = 0
 
 
 # open csv file
@@ -41,9 +43,9 @@ def my_handler(channel, data):
   #print("Received message on channel \"%s\"" % channel)
 
   # IMU handling
-  if channel == "imu":
+  if channel == "imu_data":
     msg = imu.decode(data)
-    print("   timestamp   = %s" % str(msg.timestamp))
+    #print("imu   timestamp   = %s" % str(msg.timestamp))
     #print("")
 
     writer.writerow({'time':datetime.strftime(datetime.now(),datetime_format),
@@ -63,22 +65,32 @@ def my_handler(channel, data):
                      'head':msg.head,
                      'depth':'depth',
                      'distance':inches,
-                     'switch':switch})
-    print("wrote")
+                     'switch':switch,
+                     'duty':duty
+    })
+    #print("wrote")
 
   # battery handling
-  if channel == "BATTERY":
+  if channel == "battery_data":
     msg = battery.decode(data)
-    print("   timestamp   = %s" % str(msg.timestamp))
-    print("")
+    #print("battery   timestamp   = %s" % str(msg.timestamp))
+    #print("")
     inches = msg.inches
     switch = msg.switch
+    
+  # servo handling
+  if channel == "servo_data":
+    msg = servo.decode(data)
+    #print("servo   timestamp   = %s" % str(msg.timestamp))
+    #print("")
+    duty = msg.duty
 
 
 # run lcm
 lc = lcm.LCM()
-lc.subscribe("imu", my_handler)
-lc.subscribe("BATTERY", my_handler)
+lc.subscribe("imu_data", my_handler)
+lc.subscribe("battery_data", my_handler)
+lc.subscribe("servo_data", my_handler)
 
 try:
   while True:

@@ -37,9 +37,8 @@ class Stepper2:
     self.switch = Switch()
 
     self.start = time.time()
-    #self.imu = mpu9250.IMU(enable_dmp=True,
-    #                       dmp_sample_rate=200,
-    #                       enable_magnetometer=True)
+    
+    self.lc = lcm.LCM()
 
     # init csv
     if not os.path.exists("log.csv"):
@@ -88,10 +87,14 @@ class Stepper2:
       self.inches += direction*self.degrees_to_inches(1.8)
 
       if (time.time() - self.start >= 0.1): # 10 Hz
-        #msg = battery()
-        #msg.inches = self.inches
-        #msg.switch = self.switch
-        
+        msg = battery()
+        print(self.inches)
+        print(self.switch.state)
+        msg.inches = self.inches
+        msg.switch = self.switch.state
+        msg.timestamp = datetime.strftime(datetime.now(),datetime_format)
+
+        self.lc.publish("battery_data", msg.encode())
         
         self.start = time.time()
 

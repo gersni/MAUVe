@@ -1,0 +1,7 @@
+package exlcm;
+
+struct servo
+{
+    double duty;
+    string timestamp;
+}

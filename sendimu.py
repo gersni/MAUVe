@@ -20,7 +20,7 @@ lc = lcm.LCM()
 start = time.time()
 
 while True:
-  if (time.time() - start >= 0):
+  if (time.time() - start >= 0.1):
     imu_out = imu.read()
 
     #print(imu_out)
@@ -41,5 +41,5 @@ while True:
     msg.head = imu_out['head']
     msg.timestamp = datetime.strftime(datetime.now(),datetime_format)
 
-    lc.publish("imu", msg.encode())
+    lc.publish("imu_data", msg.encode())
     start = time.time()

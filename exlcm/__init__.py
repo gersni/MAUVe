@@ -5,3 +5,4 @@ DO NOT MODIFY BY HAND!!!!
 
 from .imu import imu
 from .battery import battery
+from .servo import servo

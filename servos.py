@@ -18,10 +18,7 @@ srvo = servo.Servo(channel)
 
 if duty != 0:
   if not sweep:
-    print('Setting servo {} to {} duty'.format(channel, duty))
     srvo.set(duty)
-  else:
-    print('Sweeping servo {} to {} duty'.format(channel, duty))
 else:
   sweep = False
 
