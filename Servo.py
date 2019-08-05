@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+
+'''
+This is a class for controlling the servos
+'''
+
 import time, math
 
 from datetime import datetime
@@ -14,18 +19,31 @@ datetime_format = '%Y%m%d_%H%M%S'
 
 class Servo:
 
+  '''
+  Initialize the class, specifying the channel that the servo runs on
+  as well as the period for Clock
+  '''
   def __init__(self, channel, period=0.02):
     self.channel = channel
     self.period = period
     
     self.lc = lcm.LCM()
 
+  '''
+  Convert an angle in range [-135,135] degrees to a duty in range [-1.5,1.5]
+  '''
   def angle_to_duty(self, angle):
     return -1.5 +(3.0/270)*(angle+135)
-    
+
+  '''
+  Convert a duty in range [-1.5,1.5] to a degree in range [-135,135] 
+  '''
   def duty_to_angle(self, angle):
     return -135 +(270/3)*(angle+1.5)
 
+  '''
+  Set the servo to the angle specified in the input. Only works for range [-135,135]
+  '''
   def set_angle(self, angle):
     rcpy.set_state(rcpy.RUNNING)
     srvo = servo.Servo(self.channel)
@@ -49,6 +67,10 @@ class Servo:
 
     self.lc.publish("servo_data", msg.encode())
 
+  '''
+  Sweeps, or rotates back and forth, the servo to the angle specified in the input.
+  Only works for range [-135,135]
+  '''
   def sweep(self, angle):
     rcpy.set_state(rcpy.RUNNING)
     srvo = servo.Servo(self.channel)
@@ -84,13 +106,14 @@ class Servo:
         
         msg = servolcm()
         msg.duty = self.duty
-        msg.angle = duty_to_angle(self.duty)
+        msg.angle = (self.duty)
         msg.timestamp = datetime.strftime(datetime.now(),datetime_format)
 
         self.lc.publish("servo_data", msg.encode())
 
         time.sleep(.02)
 
+    # handle ctrl c exit
     except KeyboardInterrupt:
         pass
 

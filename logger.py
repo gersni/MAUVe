@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 
+'''
+This program uses LCM to listen to the imu_data, battery_data, and 
+servo_data channels and output the variables to the log file.
+
+When it receives battery_data or servo_data, it updates the global variables,
+and when it receives imu_data it writes everything to log.csv
+'''
+
 from datetime import datetime
 import rcpy.mpu9250 as mpu9250
 import csv
@@ -18,7 +26,7 @@ fieldnames = ['time', 'roll', 'pitch', 'yaw',
               'quat', 'head',
               'depth',
               'distance', 'switch', 
-              'duty', 'angle']
+              'duty', 'angle'] 
 
 datetime_format = '%Y%m%d_%H%M%S'
 
@@ -28,29 +36,26 @@ duty = 0
 
 
 # open csv file
-if not os.path.exists("log.csv"):
+if not os.path.exists("log.csv"): # create new if not exists
   csvfile = open('log.csv', 'w')
   writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
   writer.writeheader()
-else:
+else: # append if exists
   csvfile = open('log.csv', 'a')
   writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
 
-# handle message
+# handle messages
 def my_handler(channel, data):
   global inches
   global switch
   global duty
 
-  #print("Received message on channel \"%s\"" % channel)
-
   # IMU handling
   if channel == "imu_data":
     msg = imu.decode(data)
-    #print("imu   timestamp   = %s" % str(msg.timestamp))
-    #print("")
 
+    # write to csv
     writer.writerow({'time':datetime.strftime(datetime.now(),datetime_format),
                      'pitch':msg.pitch,
                      'roll':msg.roll,
@@ -72,30 +77,30 @@ def my_handler(channel, data):
                      'duty':duty,
                      'angle':angle
     })
-    #print("wrote")
 
   # battery handling
   if channel == "battery_data":
     msg = battery.decode(data)
-    #print("battery   timestamp   = %s" % str(msg.timestamp))
-    #print("")
+
+    # update global vars
     inches = msg.inches
     switch = msg.switch
     
   # servo handling
   if channel == "servo_data":
     msg = servo.decode(data)
-    #print("servo   timestamp   = %s" % str(msg.timestamp))
-    #print("")
+    
+    # update global vars
     duty = msg.duty
 
 
-# run lcm
+# setup lcm
 lc = lcm.LCM()
 lc.subscribe("imu_data", my_handler)
 lc.subscribe("battery_data", my_handler)
 lc.subscribe("servo_data", my_handler)
 
+# run lcm handline exiting
 try:
   while True:
     lc.handle()
@@ -105,4 +110,4 @@ except KeyboardInterrupt:
   pass
 finally:
   print("exiting")
-  csvfile.close()
+  csvfile.close() # this must run to properly save csv

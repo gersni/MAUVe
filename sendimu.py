@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+'''
+This program runs the imu continuously, and sends it over the imu_data lcm channel at 10 Hz
+'''
+
 from datetime import datetime
 import rcpy.mpu9250 as mpu9250
 import time
